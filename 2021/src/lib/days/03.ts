@@ -1,0 +1,56 @@
+import fs from "fs/promises";
+import { exit } from "process";
+
+export async function readInput(fileName: string) {
+  return (await fs.readFile(fileName))
+    .toString()
+    .split("\n")
+    .filter(Boolean)
+    .map((s) => Array.from(s).map((s) => parseInt(s, 10)));
+}
+
+function average(array: number[]) {
+  return array.reduce((a, b) => a + b, 0) / array.length;
+}
+
+/**
+ * For a given number of bits, return the max possible decimal value.
+ */
+function maxBits(numBits: number) {
+  return (1 << numBits) - 1;
+}
+
+async function part1(input: number[][]) {
+  // Transpose the 2D array, using the columns of binary values for computing averages
+  const transposed = input[0].map((_, colIndex) =>
+    input.map((row) => row[colIndex])
+  );
+
+  const gamma = parseInt(
+    transposed.map((bits) => Math.round(average(bits))).join(""),
+    2
+  );
+  const bitmask = maxBits(transposed.length);
+  // Alternatively, substract the gamma value from the max possible value for
+  // a given number of bits (the above bitmask) to compute epsilon
+  const epsilon = gamma ^ bitmask;
+
+  return gamma * epsilon;
+}
+
+async function part2(input: number[][]) {}
+
+const fileName = process.argv.slice(2)[0];
+
+if (!fileName) {
+  console.log("Example usage: npx ts-node src/lib/days/03 src/input/03.txt");
+  exit(1);
+}
+
+async function main() {
+  const input = await readInput(fileName);
+  console.log(`Day 2 - Part 1: ${await part1(input)}`);
+  console.log(`Day 2 - Part 2: ${await part2(input)}`);
+}
+
+main();
