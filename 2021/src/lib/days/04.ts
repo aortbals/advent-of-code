@@ -10,10 +10,6 @@ function chunk<T>(arr: T[], size: number): T[][] {
   return res;
 }
 
-function transpose<T>(input: T[][]): T[][] {
-  return input[0].map((_, colIndex) => input.map((row) => row[colIndex]));
-}
-
 interface Cell {
   value: number;
   marked: boolean;
@@ -49,14 +45,20 @@ export async function readInput(fileName: string): Promise<Input> {
 }
 
 function checkWin(board: Board) {
-  for (const row of board) {
-    if (row.every((cell) => cell.marked)) {
-      return true;
-    }
-  }
+  const winningCount = board.length;
 
-  for (const column of transpose(board)) {
-    if (column.every((cell) => cell.marked)) {
+  for (let i = 0; i < board.length; i++) {
+    let rowWin = 0;
+    let colWin = 0;
+    for (let j = 0; j < board[i].length; j++) {
+      if (board[i][j].marked) {
+        rowWin++;
+      }
+      if (board[j][i].marked) {
+        colWin++;
+      }
+    }
+    if (rowWin === winningCount || colWin === winningCount) {
       return true;
     }
   }
