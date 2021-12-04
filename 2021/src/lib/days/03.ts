@@ -31,14 +31,43 @@ async function part1(input: number[][]) {
     2
   );
   const bitmask = maxBits(transposed.length);
-  // Alternatively, substract the gamma value from the max possible value for
-  // a given number of bits (the above bitmask) to compute epsilon
+  // Use an XOR bitmask to flip all bits. Alternatively, substract the
+  // gamma value from the max possible value for a given number of bits
+  // (the above bitmask) to compute epsilon
   const epsilon = gamma ^ bitmask;
 
   return gamma * epsilon;
 }
 
-async function part2(input: number[][]) {}
+async function findPart2Rating(
+  input: number[][],
+  bitIndex = 0,
+  leastCommon = false
+): Promise<number[][]> {
+  const column = input.map((row) => row[bitIndex]);
+
+  const bit = leastCommon
+    ? average(column) < 0.5
+      ? 1
+      : 0
+    : average(column) >= 0.5
+    ? 1
+    : 0;
+
+  let nextInput = input.filter((row) => row[bitIndex] === bit);
+
+  if (nextInput.length === 1) {
+    return nextInput;
+  } else {
+    return findPart2Rating(nextInput, bitIndex + 1, leastCommon);
+  }
+}
+
+async function part2(input: number[][]) {
+  const oxygen = parseInt((await findPart2Rating(input))[0].join(""), 2);
+  const co2 = parseInt((await findPart2Rating(input, 0, true))[0].join(""), 2);
+  return oxygen * co2;
+}
 
 const fileName = process.argv.slice(2)[0];
 
@@ -49,8 +78,8 @@ if (!fileName) {
 
 async function main() {
   const input = await readInput(fileName);
-  console.log(`Day 2 - Part 1: ${await part1(input)}`);
-  console.log(`Day 2 - Part 2: ${await part2(input)}`);
+  console.log(`Day 3 - Part 1: ${await part1(input)}`);
+  console.log(`Day 3 - Part 2: ${await part2(input)}`);
 }
 
 main();
