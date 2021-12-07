@@ -37,7 +37,10 @@ export async function readInput(fileName: string): Promise<Input> {
         l
           .trim()
           .split(/\s+/)
-          .map((value) => ({ value: parseInt(value, 10), marked: false }))
+          .map((value: string) => ({
+            value: parseInt(value, 10),
+            marked: false,
+          }))
       ),
       5
     ),
@@ -107,9 +110,9 @@ function prettyPrintBoard(board: Board) {
     .join("\n");
 }
 
-async function part1({ drawnNumbers, ...input }: Input) {
+function part1({ drawnNumbers, ...input }: Input) {
   // Boards are mutated, make a fresh copy
-  let boards = [...input.boards];
+  const boards = [...input.boards];
 
   for (const number of drawnNumbers) {
     // Due ot the nature of the challenge, we assume a single winner.
@@ -137,12 +140,12 @@ async function part1({ drawnNumbers, ...input }: Input) {
   }
 }
 
-async function part2({ drawnNumbers, ...input }: Input) {
+function part2({ drawnNumbers, ...input }: Input) {
   // Boards are mutated, make a fresh copy
   let boards = [...input.boards];
 
   for (const number of drawnNumbers) {
-    let winners: number[] = [];
+    const winners: number[] = [];
 
     boards.forEach((board, index) => {
       const [nextBoard, hit] = updateBoard(board, number);
