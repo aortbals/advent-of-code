@@ -75,7 +75,7 @@ const fileName = Deno.args[0];
 
 if (!fileName) {
   console.log(
-    "Example usage: deno --allow-read src/lib/days/05.ts src/input/05.txt"
+    "Example usage: deno run --allow-read src/lib/days/05.ts src/input/05.txt"
   );
   Deno.exit(1);
 }

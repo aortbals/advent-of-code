@@ -54,7 +54,7 @@ function part2(input: number[], days = 256) {
 
 if (!Deno.args[0]) {
   console.log(
-    "Example usage: deno --allow-read src/lib/days/06.ts src/input/06.txt"
+    "Example usage: deno run --allow-read src/lib/days/06.ts src/input/06.txt"
   );
   Deno.exit(1);
 }
