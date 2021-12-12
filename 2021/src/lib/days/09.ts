@@ -8,7 +8,7 @@ async function readInput(fileName: string) {
     .map((l) => l.split("").map((v) => parseInt(v, 10)));
 }
 
-function part1(input: number[][]) {
+function lowPoints(input: number[][]) {
   const lowPoints = [];
 
   for (let i = 0; i < input.length; i++) {
@@ -23,14 +23,16 @@ function part1(input: number[][]) {
       ].filter((v): v is number => v !== undefined);
 
       if (adjacent.every((p) => v < p)) {
-        lowPoints.push(v);
+        lowPoints.push([i, j]);
       }
     }
   }
 
-  return lowPoints.reduce((risk, p) => {
-    return risk + p + 1;
-  }, 0);
+  return lowPoints;
+}
+
+function part1(input: number[][]) {
+  return lowPoints(input).reduce((risk, [x, y]) => risk + input[x][y] + 1, 0);
 }
 
 function _print(matrix: string[][]) {
@@ -76,23 +78,10 @@ function part2(input: number[][]) {
     });
   }
 
-  for (let i = 0; i < input.length; i++) {
-    for (let j = 0; j < input[i].length; j++) {
-      const v = input[i][j];
-
-      const adjacent = [
-        i > 0 ? input[i - 1][j] : undefined, // top
-        i + 1 < input.length ? input[i + 1][j] : undefined, // bottom
-        j > 0 ? input[i][j - 1] : undefined, // left
-        j + 1 < input[i].length ? input[i][j + 1] : undefined, // right
-      ].filter((n): n is number => n !== undefined);
-
-      if (adjacent.every((p) => v < p)) {
-        // A low point has been found, fill it
-        spreadBasin(i, j, `${i},${j}`);
-      }
-    }
-  }
+  lowPoints(input).forEach(([i, j]) => {
+    // A low point has been found, fill it
+    spreadBasin(i, j, `${i},${j}`);
+  });
 
   return Object.values(
     basinMatrix.reduce((counts: { [key: string]: number }, row) => {
